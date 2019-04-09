@@ -2,10 +2,24 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 
-Vue.use(Router)
+Vue.use(Router);
+
+const Board = {
+  template: "<div>Доска  {{ $route.params.thread }}</div>"
+};
+
+const ChooseBoard = id => () => import('./views/BoardChooser').then(m => m.default(id));
+const ChooseThread = id => () => import('./views/ThreadChooser').then(m => m.default(id));
 
 export default new Router({
+  mode: 'history',
   routes: [
+    {
+      path: '/:board(\\w+)', component: ChooseBoard()
+    },
+      {
+          path: '/:board(\\w+)/:thread(\\d+)', component: ChooseThread()
+      },
     {
       path: '/',
       name: 'home',
@@ -14,9 +28,6 @@ export default new Router({
     {
       path: '/about',
       name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
     }
   ]
